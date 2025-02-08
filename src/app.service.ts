@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { iBody, iUser } from './interfaces/user.interface';
 
 const data = [
   {
@@ -23,16 +24,6 @@ const data = [
   }
 ];
 
-interface iUser {
-  id: number,
-  name: string,
-  description: string
-}
-
-interface iBody {
-  name: string,
-  description: string
-}
 
 
 @Injectable()
