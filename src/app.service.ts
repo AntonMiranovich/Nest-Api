@@ -29,31 +29,48 @@ const data = [
 @Injectable()
 export class AppService {
 
+  handleErrors(condition: boolean, errorMessage: string): void {
+    if (condition) {
+      throw new Error(errorMessage);
+    }
+  }
+
   isValidUser(obj: Partial<iBody>) {
+    const keys = Object.keys(obj);
+    keys.forEach(key => {
+      this.handleErrors(!Object.keys(data[0]).includes(key), `Недопустимое поле: ${key}`);
+    });
+
     if (obj.name && !isNaN(+obj.name)) throw new Error('Incorrect values ​​are introduced')
     if (obj.description && !isNaN(+obj.description)) throw new Error('Incorrect values ​​are introduced')
   }
 
+
+
+
   getAllItem(): iUser[] {
-    if (!data.length) throw new Error('The database is empty')
+    this.handleErrors(!data.length, 'База данных пуста');
 
     return data;
   }
 
   postItem(obj: iBody): iUser[] {
-    this.isValidUser(obj)
-    if (!obj.name || !obj.description) throw new Error('Incorrect values ​​are introduced')
+    this.isValidUser(obj);
+    this.handleErrors(!obj.name || !obj.description, 'Введены некорректные значения');
+
     const dbLength = data.length
     const newId: number = data.length === 0 ? 1 : data[data.length - 1].id + 1
     data.push({ id: newId, ...obj })
-    if (dbLength === data.length) throw new Error('There was an add -on error')
+    this.handleErrors(dbLength === data.length, 'Произошла ошибка при добавлении');
 
     return data
   }
 
   putItem(id: string, obj: iBody): iUser[] {
-    this.isValidUser(obj)
-    if (!id || !obj.name || !obj.description) throw new Error('There are incomplete fields')
+    this.isValidUser(obj);
+
+    this.handleErrors(!id || !obj.name || !obj.description, 'Некоторые поля не заполнены');
+
     const indexEl = data.findIndex(el => el.id === +id);
     if (indexEl === -1) throw new Error('Such ID does not exist');
     data[indexEl] = { ...data[indexEl], ...obj };
@@ -62,18 +79,19 @@ export class AppService {
   }
 
   patchItem(id: string, obj: Partial<iBody>): iUser[] {
-    this.isValidUser(obj)
-    if (!id && !obj.name && !obj.description) throw new Error('There are incomplete fields')
+    this.isValidUser(obj);
+
+    this.handleErrors(!id || !obj.name || !obj.description, 'Некоторые поля не заполнены')
     const indexEl = data.findIndex(el => el.id === +id);
-    if (indexEl === -1) throw new Error('Such ID does not exist');
+    this.handleErrors(indexEl === -1, 'Такой ID не существует')
     data[indexEl] = { ...data[indexEl], ...obj };
 
     return data;
   }
 
   deleteItem(id: string): iUser[] {
-    if (data.findIndex(el => el.id === +id) === -1) throw new Error('Such ID does not exist')
     const indexEl = data.findIndex(el => el.id === +id);
+    this.handleErrors(indexEl === -1, 'Такой ID не существует')
     data.splice(indexEl, 1);
 
     return data;
