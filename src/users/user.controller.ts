@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { AppService } from './app.service';
-import { iBody, iUser } from './interfaces/user.interface';
+import { AppService } from './user.service';
+import { iBody, iUser } from '../interfaces/user.interface';
 
 
 @Controller()
