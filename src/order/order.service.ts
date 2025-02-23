@@ -13,7 +13,7 @@ export class AppService {
   }
 
   postItem(obj: iOrderBody): iOrder[] {
-    if (!obj.userId || !obj.itemName) throw new Error('There are incomplete fields')
+    if ( !obj.itemName) throw new Error('There are incomplete fields')
 
     const newId: number = orders.length === 0 ? 1 : orders[orders.length - 1].id + 1
     orders.push({ id: newId, ...obj })

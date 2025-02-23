@@ -3,11 +3,11 @@ import { AppService } from './order.service';
 import { iOrderBody, iOrder } from '../interfaces/user.interface';
 
 
-@Controller()
+@Controller('/orders')
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @Get('/orders')
+  @Get()
   getItem(): iOrder[] | string {
     try {
       return this.appService.getItem();
@@ -16,7 +16,7 @@ export class AppController {
     }
   }
 
-  @Post('/orders')
+  @Post()
   postItem(@Body() obj: iOrderBody): iOrder[] | string {
     try {
       return this.appService.postItem(obj);
